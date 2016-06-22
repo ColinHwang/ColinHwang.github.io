@@ -84,15 +84,19 @@
 
 
 
-<meta name="description" content="Developer">
-<meta property="og:type" content="website">
-<meta property="og:title" content="CHwang">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="项目里经常有这么一种需求，把小数四舍五入到指定位数，查阅文档，我们发现系统提供了NSDecimalNumber类方便我们实现需求。
+NSDecimalNumber是系统提供的一个专门处理十进位制数的类：1NSDecimalNumber, an immutable subclass of NSNumber, provides an object-oriented wrapper for doing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSDecimalNumber 四舍五入到指定位数">
+<meta property="og:url" content="http://yoursite.com/2016/06/22/round-number/index.html">
 <meta property="og:site_name" content="CHwang">
-<meta property="og:description" content="Developer">
+<meta property="og:description" content="项目里经常有这么一种需求，把小数四舍五入到指定位数，查阅文档，我们发现系统提供了NSDecimalNumber类方便我们实现需求。
+NSDecimalNumber是系统提供的一个专门处理十进位制数的类：1NSDecimalNumber, an immutable subclass of NSNumber, provides an object-oriented wrapper for doing">
+<meta property="og:updated_time" content="2016-06-22T08:17:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CHwang">
-<meta name="twitter:description" content="Developer">
+<meta name="twitter:title" content="NSDecimalNumber 四舍五入到指定位数">
+<meta name="twitter:description" content="项目里经常有这么一种需求，把小数四舍五入到指定位数，查阅文档，我们发现系统提供了NSDecimalNumber类方便我们实现需求。
+NSDecimalNumber是系统提供的一个专门处理十进位制数的类：1NSDecimalNumber, an immutable subclass of NSNumber, provides an object-oriented wrapper for doing">
 
 
 
@@ -110,7 +114,7 @@
   };
 </script>
 
-  <title> CHwang </title>
+  <title> NSDecimalNumber 四舍五入到指定位数 | CHwang </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -140,9 +144,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -249,9 +251,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -271,10 +273,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/06/22/round-number/" itemprop="url">
-                  NSDecimalNumber 四舍五入到指定位数
-                </a>
+                NSDecimalNumber 四舍五入到指定位数
               
             
           </h1>
@@ -321,9 +320,7 @@
       
 
       
-        
-          
-            <p>项目里经常有这么一种需求，把小数四舍五入到指定位数，查阅文档，我们发现系统提供了NSDecimalNumber类方便我们实现需求。</p>
+        <p>项目里经常有这么一种需求，把小数四舍五入到指定位数，查阅文档，我们发现系统提供了NSDecimalNumber类方便我们实现需求。</p>
 <p>NSDecimalNumber是系统提供的一个专门处理十进位制数的类：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDecimalNumber, an immutable subclass of NSNumber, provides an object-oriented wrapper <span class="keyword">for</span> doing base-10 arithmetic. An instance can represent any number that can be expressed as mantissa x 10^exponent <span class="built_in">where</span> mantissa is a decimal <span class="built_in">integer</span> up to 38 digits long, and exponent is an <span class="built_in">integer</span> from –128 through 127.</span><br></pre></td></tr></table></figure></p>
 <p>NSDecimalNumber提供了处理舍入问题的方法：<br>Rounds the receiver off in the way specified by behavior and returns the result, a newly createdNSDecimalNumber object.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (NSDecimalNumber *)decimalNumberByRoundingAccordingToBehavior:(nullable id &lt;NSDecimalNumberBehaviors&gt;)behavior;</span><br></pre></td></tr></table></figure></p>
 <p>该方法需要调用者提供一个遵循NSDecimalNumerBehaviors协议的执行者来处理舍入问题。这里我们无需自定义一个类，只需使用系统提供的NSDecimalNumberHandler类来处理。该类已遵循NSDecimalNumerBehaviors协议，且提供了一些方法方便我们实现：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDecimalNumberHandler is a class that adopts the NSDecimalNumberBehaviors protocol. This class allows you to <span class="built_in">set</span> the way an NSDecimalNumber object rounds off and handles errors, without having to create a custom class.</span><br></pre></td></tr></table></figure></p>
@@ -337,16 +334,19 @@
 <p>根据double数值、舍入位数和舍入模式, 创建decimalNumber：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (NSDecimalNumber *)decimalNumberWithDouble:(double)value roundingScale:(short)scale roundingMode:(NSRoundingMode)mode</span><br><span class="line">&#123;</span><br><span class="line">    return [[[NSDecimalNumber alloc] initWithDouble:value] roundToScale:scale mode:mode];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>根据double数值和四舍五入位数, 创建decimalNumber：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (NSDecimalNumber *)decimalNumberWithDouble:(double)value roundingScale:(short)scale</span><br><span class="line">&#123;</span><br><span class="line">    return [[[NSDecimalNumber alloc] initWithDouble:value] roundToScale:scale];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
@@ -354,232 +354,55 @@
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/05/30/crop-image/" rel="next" title="UIImage 裁切图片">
+                <i class="fa fa-chevron-left"></i> UIImage 裁切图片
+              </a>
             
-              
-                
-                <a class="post-title-link" href="/2016/05/30/crop-image/" itemprop="url">
-                  UIImage 裁切图片
-                </a>
-              
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-30T23:31:01+08:00" content="2016-05-30">
-              2016-05-30
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/30/crop-image/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/30/crop-image/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>项目里通常会有这样一种需求，将图片按指定尺寸裁切(一般为矩形图片裁切，保留中间部分为正方形，多用于上传缩略图)。查阅文档，我们发现系统提供了以下两个API方便我们实现：<br>Creates a bitmap image using the data contained within a subregion of an existing bitmap image:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGImageCreateWithImageInRect(CGImageRef image, CGRect rect);</span><br></pre></td></tr></table></figure>
-<p>Creates and returns an image object with the specified scale and orientation factors:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (UIImage *)imageWithCGImage:(CGImageRef)cgImage scale:(CGFloat)scale orientation:(UIImageOrientation)orientation;</span><br></pre></td></tr></table></figure></p>
-<p>通过这两个API，我们可以通过UIImage分类方法的形式，指定裁切范围，对图片进行裁切:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)imageByCropToRect:(CGRect)rect</span><br><span class="line">&#123;</span><br><span class="line">    rect.origin.x *= self.scale; // Point -&gt; Px</span><br><span class="line">    rect.origin.y *= self.scale;</span><br><span class="line">    rect.size.width *= self.scale;</span><br><span class="line">    rect.size.height *= self.scale;</span><br><span class="line">    <span class="keyword">if</span> (rect.size.width &lt;= 0 || rect.size.height &lt;= 0) <span class="built_in">return</span> nil;</span><br><span class="line">    CGImageRef imageRef = CGImageCreateWithImageInRect(self.CGImage, rect);</span><br><span class="line">    UIImage *image = [UIImage imageWithCGImage:imageRef scale:self.scale orientation:self.imageOrientation];</span><br><span class="line">    CGImageRelease(imageRef);</span><br><span class="line">    <span class="built_in">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>以上方法裁切后的图片是以图片像素(Pixel)为单位，有时候我们可能只想获取以点(Dot)为单位的图片，可以对方法进行一些改造:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)imageByCropToRect:(CGRect)rect</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">return</span> [self imageByCropToRect:rect scale:YES];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)imageByCropToRect:(CGRect)rect scale:(BOOL)scale</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (scale)</span><br><span class="line">    &#123;</span><br><span class="line">        rect.origin.x *= self.scale; // Point -&gt; Px</span><br><span class="line">        rect.origin.y *= self.scale;</span><br><span class="line">        rect.size.width *= self.scale;</span><br><span class="line">        rect.size.height *= self.scale;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rect.size.width &lt;= 0 || rect.size.height &lt;= 0) <span class="built_in">return</span> nil;</span><br><span class="line">    CGImageRef imageRef = CGImageCreateWithImageInRect(self.CGImage, rect);</span><br><span class="line">    UIImage *image = [UIImage imageWithCGImage:imageRef scale:self.scale orientation:self.imageOrientation];</span><br><span class="line">    CGImageRelease(imageRef);</span><br><span class="line">    <span class="built_in">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>至此，方法接口主体完成。考虑到业务扩展，我们还可以在接口设计上，提供一些扩展方法供外部调用:<br>预先提供一些业务可能存在的裁切需求:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, UIImageCropStyle) &#123;  // 裁切类型</span><br><span class="line">    UIImageCropStyleLeft = 0,                   // 左半部分</span><br><span class="line">    UIImageCropStyleRight,                      // 右半部分</span><br><span class="line">    UIImageCropStyleCenter,                     // 中间部分</span><br><span class="line">    UIImageCropStyleTop,                        // 上半部分</span><br><span class="line">    UIImageCropStyleBottom,                     // 下半部分</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>根据图片裁切类型，裁切图片:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)imageByCropStyle:(UIImageCropStyle)style</span><br><span class="line">&#123;</span><br><span class="line">    CGFloat cropX = 0, cropY = 0, cropWidth = self.size.width, cropHeight = self.size.width;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (style == UIImageCropStyleLeft)</span><br><span class="line">    &#123;</span><br><span class="line">        cropWidth /= 2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (style == UIImageCropStyleRight)</span><br><span class="line">    &#123;</span><br><span class="line">        cropWidth /= 2;</span><br><span class="line">        cropX = cropWidth;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (style == UIImageCropStyleCenter)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (cropWidth &gt; cropHeight)</span><br><span class="line">        &#123;</span><br><span class="line">            cropX = (cropWidth - cropHeight)/2;</span><br><span class="line">            cropWidth = cropHeight;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (cropWidth &lt; cropHeight)</span><br><span class="line">        &#123;</span><br><span class="line">            cropY = (cropHeight - cropWidth)/2;</span><br><span class="line">            cropHeight = cropWidth;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (style == UIImageCropStyleTop)</span><br><span class="line">    &#123;</span><br><span class="line">        cropHeight /= 2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (style == UIImageCropStyleBottom)</span><br><span class="line">    &#123;</span><br><span class="line">        cropHeight /= 2;</span><br><span class="line">        cropY = cropHeight;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">return</span> [self imageByCropToRect:CGRectMake(cropX, cropY, cropWidth, cropHeight)];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>将矩形图片裁切为正方形图片(保留中间部分):<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)imageByCropToSquare</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">return</span> [self imageByCropStyle:UIImageCropStyleCenter];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>以上方法满足一般的图片裁切需求，若有特殊的图片裁切需求(如将图片裁切为圆形或不规则图形)，可以选择使用UIBezierPath重绘实现。</p>
-<p>参考资料：</p>
-<p>[1]刚刚在线.截取UIImage指定大小区域[EB/OL].<a href="http://www.superqq.com/blog/2015/07/26/jie-qu-uiimagezhi-ding-da-xiao-qu-yu" target="_blank" rel="external">http://www.superqq.com/blog/2015/07/26/jie-qu-uiimagezhi-ding-da-xiao-qu-yu</a> ,2015-7-26.<br>[2]Apple Inc.UIImage Reference Class[EB/OL].<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImage_Class/index.html" target="_blank" rel="external">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImage_Class/index.html</a> ,2016-5-30.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
+
+    <div class="post-spread">
       
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/28/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-28T17:42:36+08:00" content="2016-05-28">
-              2016-05-28
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/28/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/28/hello-world/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>希望是个好的开始。</p>
-
-          
-        
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
@@ -587,6 +410,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -606,8 +440,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -643,6 +486,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -746,6 +600,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
@@ -762,9 +620,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'colinhwangcom';
-      var disqus_identifier = 'index.html';
-      var disqus_title = "";
-      var disqus_url = '';
+      var disqus_identifier = '2016/06/22/round-number/';
+      var disqus_title = "NSDecimalNumber 四舍五入到指定位数";
+      var disqus_url = 'http://yoursite.com/2016/06/22/round-number/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
@@ -775,6 +633,8 @@
       }
 
       run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
       
     </script>
   
