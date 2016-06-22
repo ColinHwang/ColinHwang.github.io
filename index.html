@@ -429,7 +429,6 @@
         
           <p>项目里通常会有这样一种需求，将图片按指定尺寸裁切(一般为矩形图片裁切，保留中间部分为正方形，多用于上传缩略图)。查阅文档，我们发现系统提供了以下两个API方便我们实现：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Creates a bitmap image using the data contained within a subregion of an existing bitmap image.</span><br><span class="line"></span><br><span class="line">CGImageCreateWithImageInRect(CGImageRef image, CGRect rect);</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Creates and returns an image object with the specified scale and orientation factors:</span><br><span class="line"></span><br><span class="line">+ (UIImage *)imageWithCGImage:(CGImageRef)cgImage scale:(CGFloat)scale orientation:(UIImageOrientation)orientation;</span><br></pre></td></tr></table></figure>
-<p>通过这两个API，我们可以通过UIImage分类方法的形式，指定裁切范围，对图片进行裁切:<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/05/30/crop-image/#more" rel="contents">
               阅读全文 &raquo;
