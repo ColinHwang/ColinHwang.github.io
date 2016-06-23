@@ -84,16 +84,19 @@
 
 
 
-<meta name="description" content="希望是个好的开始。">
+<meta name="description" content="最近接到一个需求，文本长度为2-3个文字，两个文字长度的文本要求中间存在空距，左右顶边，且整体文本长度与三个文字的文本长度保持一致。效果如下：12居住地：____     职  业：____爱  好：____     电  话：____
+最简单的实现是让UI把文字做成图片直接使用。第二种则是文本内加空格：1[NSString stringWithFormat:@&amp;quot;爱  好：&amp;quot;]">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2016/05/28/hello-world/index.html">
+<meta property="og:title" content="NSAttributeString 实现文字遮盖效果">
+<meta property="og:url" content="http://yoursite.com/2016/06/23/NSAttributeString-text-marked/index.html">
 <meta property="og:site_name" content="CHwang">
-<meta property="og:description" content="希望是个好的开始。">
-<meta property="og:updated_time" content="2016-05-30T15:36:10.000Z">
+<meta property="og:description" content="最近接到一个需求，文本长度为2-3个文字，两个文字长度的文本要求中间存在空距，左右顶边，且整体文本长度与三个文字的文本长度保持一致。效果如下：12居住地：____     职  业：____爱  好：____     电  话：____
+最简单的实现是让UI把文字做成图片直接使用。第二种则是文本内加空格：1[NSString stringWithFormat:@&amp;quot;爱  好：&amp;quot;]">
+<meta property="og:updated_time" content="2016-06-23T07:23:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="希望是个好的开始。">
+<meta name="twitter:title" content="NSAttributeString 实现文字遮盖效果">
+<meta name="twitter:description" content="最近接到一个需求，文本长度为2-3个文字，两个文字长度的文本要求中间存在空距，左右顶边，且整体文本长度与三个文字的文本长度保持一致。效果如下：12居住地：____     职  业：____爱  好：____     电  话：____
+最简单的实现是让UI把文字做成图片直接使用。第二种则是文本内加空格：1[NSString stringWithFormat:@&amp;quot;爱  好：&amp;quot;]">
 
 
 
@@ -111,7 +114,7 @@
   };
 </script>
 
-  <title> Hello World | CHwang </title>
+  <title> NSAttributeString 实现文字遮盖效果 | CHwang </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -270,7 +273,7 @@
             
             
               
-                Hello World
+                NSAttributeString 实现文字遮盖效果
               
             
           </h1>
@@ -282,8 +285,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-28T17:42:36+08:00" content="2016-05-28">
-              2016-05-28
+            <time itemprop="dateCreated" datetime="2016-06-23T15:08:55+08:00" content="2016-06-23">
+              2016-06-23
             </time>
           </span>
 
@@ -293,8 +296,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/05/28/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/28/hello-world/" itemprop="commentsCount"></span>
+                <a href="/2016/06/23/NSAttributeString-text-marked/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/23/NSAttributeString-text-marked/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -317,7 +320,18 @@
       
 
       
-        <p>希望是个好的开始。</p>
+        <p>最近接到一个需求，文本长度为2-3个文字，两个文字长度的文本要求中间存在空距，左右顶边，且整体文本长度与三个文字的文本长度保持一致。效果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">居住地：____     职  业：____</span><br><span class="line">爱  好：____     电  话：____</span><br></pre></td></tr></table></figure></p>
+<p>最简单的实现是让UI把文字做成图片直接使用。第二种则是文本内加空格：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[NSString stringWithFormat:@&quot;爱  好：&quot;];</span><br></pre></td></tr></table></figure></p>
+<p>但是这种方法的问题在于由于文字font的存在，有时候，添加空格后文本的长度无法与三个文字的文本长度一致。这时候我们还可以选择第三种方案，保持文字长度一致，再遮盖部分文字，保留显示文字：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">居住地：____     职一业：____</span><br><span class="line">爱一好：____     电一话：____</span><br><span class="line"></span><br><span class="line">职一业： -&gt;  职  业：</span><br><span class="line">爱一好： -&gt;  爱  好：</span><br><span class="line">电一话： -&gt;  电  话：</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>具体实现上，我们通过NSAttributedString的分类方法实现。将原有字符转换为属性字符，并设置文字属性、遮盖范围及遮盖部分的文字属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">+ (NSAttributedString *)attributedStringWithString:(NSString *)string attributes:(NSDictionary&lt;NSString *, id&gt; *)attrs markRange:(NSRange)markRange markAattributes:(NSDictionary&lt;NSString *, id&gt; *)markAttrs</span><br><span class="line">&#123;</span><br><span class="line">    if (!string||string.length &lt;= 0) return nil;</span><br><span class="line"></span><br><span class="line">    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:attrs];</span><br><span class="line"></span><br><span class="line">    NSRange stringRange = NSMakeRangeFromString(string);</span><br><span class="line">    if (NSRangeInRange(markRange, stringRange))</span><br><span class="line">    &#123;</span><br><span class="line">        [attributedString addAttributes:markAttrs range:markRange];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return attributedString;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在这里，我们先将文字整体转换为指定属性的文字。之后获取文字范围，当遮盖范围在文字范围内则实现遮盖文字效果。获取文字范围和判断遮盖范围是否在文字范围内，我们可以通过在NSValue的分类方法内添加内联函数方法的形式实现：<br>获取字符串的range：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NS_INLINE NSRange NSMakeRangeFromString(NSString *string)</span><br><span class="line">&#123;</span><br><span class="line">    return NSMakeRange(0, string.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>判断range1是否包含于range2内：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NS_INLINE BOOL NSRangeInRange(NSRange range1, NSRange range2)</span><br><span class="line">&#123;</span><br><span class="line">    return (NSLocationInRange(range1.location, range2) &amp;&amp; range1.length &lt;= (range2.length - range1.location)) ? YES : NO;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同时，我们也可以提供一个便利方法处理此类需求，将原有字符转换为属性字符，并设置文字颜色、文字格式及遮盖范围，遮盖效果默认为透明颜色：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (NSAttributedString *)attributedStringWithString:(NSString *)string textColor:(UIColor *)color font:(UIFont *)font markRange:(NSRange)markRange</span><br><span class="line">&#123;</span><br><span class="line">    return [NSAttributedString attributedStringWithString:string attributes:@&#123;NSFontAttributeName:font, NSForegroundColorAttributeName:color&#125; markRange:markRange markAttributes:@&#123;NSForegroundColorAttributeName:[UIColor clearColor]&#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为方便代码管理，在具体调用界面，我们可以参考UITableView与 NSIndexPath(UITableView), 根据界面需求，为调用界面添加专用的NSAttributeString分类方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@implementation NSAttributedString (AdjustPersonalInfoTitle)</span><br><span class="line"></span><br><span class="line">+ (NSAttributedString *)attributedTitleWithString:(NSString *)string markRange:(NSRange)markRange</span><br><span class="line">&#123;</span><br><span class="line">    return [NSAttributedString attributedStringWithString:string textColor:[UIColor colorWithHexString:LEFT_TITLE_LABEL_COLOR] font:[UIFont fontWithName:@&quot;Arial&quot; size:LEFT_TITLE_LABEL_FONT] markRange:markRange];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>最后，在需要调用的位置调用即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.leftTitleLabel.attributedText = [NSAttributedString attributedTitleWithString:@“职一业:&quot; markRange:NSMakeRange(1, 1)];</span><br></pre></td></tr></table></figure></p>
+<p>参考资料：</p>
+<p>[1]Apple Inc.NSAttributedString Classs Reference[EB/OL].<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html" target="_blank" rel="external">https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html</a> ,2016-6-23.</p>
 
       
     </div>
@@ -342,13 +356,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/06/22/round-number/" rel="next" title="NSDecimalNumber 四舍五入到指定位数">
+                <i class="fa fa-chevron-left"></i> NSDecimalNumber 四舍五入到指定位数
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/05/30/crop-image/" rel="prev" title="UIImage 裁切图片">
-                UIImage 裁切图片 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -605,9 +619,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'colinhwangcom';
-      var disqus_identifier = '2016/05/28/hello-world/';
-      var disqus_title = "Hello World";
-      var disqus_url = 'http://yoursite.com/2016/05/28/hello-world/';
+      var disqus_identifier = '2016/06/23/NSAttributeString-text-marked/';
+      var disqus_title = "NSAttributeString 实现文字遮盖效果";
+      var disqus_url = 'http://yoursite.com/2016/06/23/NSAttributeString-text-marked/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
