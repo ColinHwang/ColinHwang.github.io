@@ -1,0 +1,701 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,AFNetworking," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="开发中，通常需要对网络请求进行一些封装处理以方便开发人员调用。当前，大多数iOS项目都采用Mattt Thompson主导的AFNetworking开源库处理网络请求。有些项目里直接使用AFNetworking的相关请求方法，把请求的实现直接暴露在外部。从程序设计的角度看，这是不合适的。请求实现分散在项目的各个角落，当需要同时修改请求的某个配置时，注定是场灾难。因而，我们一般会在AFNetwork">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AFNetworking 网络请求工具类的简单封装">
+<meta property="og:url" content="http://yoursite.com/2016/07/04/afnetworking-wrapped/index.html">
+<meta property="og:site_name" content="CHwang">
+<meta property="og:description" content="开发中，通常需要对网络请求进行一些封装处理以方便开发人员调用。当前，大多数iOS项目都采用Mattt Thompson主导的AFNetworking开源库处理网络请求。有些项目里直接使用AFNetworking的相关请求方法，把请求的实现直接暴露在外部。从程序设计的角度看，这是不合适的。请求实现分散在项目的各个角落，当需要同时修改请求的某个配置时，注定是场灾难。因而，我们一般会在AFNetwork">
+<meta property="og:updated_time" content="2016-07-04T12:22:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AFNetworking 网络请求工具类的简单封装">
+<meta name="twitter:description" content="开发中，通常需要对网络请求进行一些封装处理以方便开发人员调用。当前，大多数iOS项目都采用Mattt Thompson主导的AFNetworking开源库处理网络请求。有些项目里直接使用AFNetworking的相关请求方法，把请求的实现直接暴露在外部。从程序设计的角度看，这是不合适的。请求实现分散在项目的各个角落，当需要同时修改请求的某个配置时，注定是场灾难。因而，我们一般会在AFNetwork">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> AFNetworking 网络请求工具类的简单封装 | CHwang </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-78463688-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CHwang</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">物我一心</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'HuBPCAs2dbWdeBkzdRM-','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AFNetworking 网络请求工具类的简单封装
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-04T15:47:41+08:00" content="2016-07-04">
+              2016-07-04
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/04/afnetworking-wrapped/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/04/afnetworking-wrapped/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发中，通常需要对网络请求进行一些封装处理以方便开发人员调用。当前，大多数iOS项目都采用Mattt Thompson主导的AFNetworking开源库处理网络请求。有些项目里直接使用AFNetworking的相关请求方法，把请求的实现直接暴露在外部。从程序设计的角度看，这是不合适的。请求实现分散在项目的各个角落，当需要同时修改请求的某个配置时，注定是场灾难。因而，我们一般会在AFNetworking等网络库的基础上，进行一层抽象，通过网络请求工具类包装接口，统一调度，并依据项目自身接口环境配置请求参数。以下模拟接口环境，对AFNetworking 3.0网络请求库进行一些简单的封装：</p>
+<ol>
+<li>创建网络请求工具类，并进行一些统一配置：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, strong) AFHTTPSessionManager *manager;</span><br><span class="line"></span><br><span class="line">+ (CHHTTPHelper *)defaultHTTPHelper</span><br><span class="line">&#123;</span><br><span class="line">    static CHHTTPHelper *instance = nil;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        instance = [[self alloc] init];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<p>统一配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">self.manager = [AFHTTPSessionManager manager];</span><br><span class="line"></span><br><span class="line">self.manager.requestSerializer.timeoutInterval = 10; // 请求时长</span><br><span class="line">self.manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects: @&quot;text/plain&quot;, @&quot;application/json&quot;, @&quot;text/json&quot;, @&quot;text/javascript&quot;, @&quot;text/html&quot;, @&quot;image/png&quot;, nil];</span><br><span class="line"></span><br><span class="line">self.manager.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>根据接口环境，进行HOST路径的配置：<br>接口环境：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">BASE_HOST：</span><br><span class="line">    内网：www.developer.com</span><br><span class="line">    外网：www.public.com</span><br><span class="line"></span><br><span class="line">HOST：</span><br><span class="line">    内网：http://www.developer.com</span><br><span class="line">    外网：http://www.public.com</span><br><span class="line"></span><br><span class="line">端口：</span><br><span class="line">    1020</span><br><span class="line">    2030</span><br><span class="line"></span><br><span class="line">HOST_PATH：</span><br><span class="line">    内网：http://www.development.com:1020</span><br><span class="line">    外网：http://www.public.com:2030</span><br><span class="line"></span><br><span class="line">完整请求路径：</span><br><span class="line">    内网：http://www.development.com:1020/module/api</span><br><span class="line">    外网：http://www.public.com:2030/module/api</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>考虑内外网等情况，配置HOST路径：<br>获取网络协议头：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, CHNetworkProtocolType) &#123; </span><br><span class="line">    CHNetworkProtocolTypeNone = 0,</span><br><span class="line">    CHNetworkProtocolTypeHTTP,</span><br><span class="line">    CHNetworkProtocolTypeHTTPS,</span><br><span class="line">    CHNetworkProtocolTypeFTP</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">+ (NSString *)networkProtocol:(CHNetworkProtocolType)protocolType</span><br><span class="line">&#123;</span><br><span class="line">    NSString *protocolString = @&quot;&quot;;</span><br><span class="line"></span><br><span class="line">    if (protocolType == CHNetworkProtocolTypeNone)</span><br><span class="line">    &#123;</span><br><span class="line">        return protocolString;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (protocolType == CHNetworkProtocolTypeHTTP)</span><br><span class="line">    &#123;</span><br><span class="line">        protocolString = @&quot;http&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (protocolType == CHNetworkProtocolTypeHTTPS)</span><br><span class="line">    &#123;</span><br><span class="line">        protocolString = @&quot;https&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (protocolType == CHNetworkProtocolTypeFTP)</span><br><span class="line">    &#123;</span><br><span class="line">        protocolString = @&quot;ftp&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return [protocolString stringByAppendingString:@&quot;://&quot;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取BASE_HOST：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">static NSString * const BASE_HOST_DEVELOPER = @&quot;www.developer.com&quot;; </span><br><span class="line">static NSString * const BASE_HOST_PUPLIC = @&quot;www.public.com&quot;; </span><br><span class="line"></span><br><span class="line">+ (NSString *)baseHost</span><br><span class="line">&#123;</span><br><span class="line">#ifdef DEBUG </span><br><span class="line">    return BASE_HOST_DEVELOPER; // change</span><br><span class="line">//    return BASE_HOST_PUPLIC; // change</span><br><span class="line">#else</span><br><span class="line">    return BASE_HOST_PUPLIC;</span><br><span class="line">#endif</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取端口号：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, CHServerPortType) &#123; </span><br><span class="line">    CHServerPortTypeNone = 0,</span><br><span class="line">    CHServerPortType1020 = 1020,</span><br><span class="line">    CHServerPortType2030 = 2030,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">+ (NSString *)port:(CHServerPortType)portType</span><br><span class="line">&#123;</span><br><span class="line">    NSString *portString = @&quot;&quot;;</span><br><span class="line"></span><br><span class="line">    if (portType == CHServerPortTypeNone)</span><br><span class="line">    &#123;</span><br><span class="line">        return portString;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    portString = [@&quot;:&quot; stringByAppendingString:[NSString stringWithFormat:@&quot;%ld&quot;, (long)portType]]; // :1020</span><br><span class="line"></span><br><span class="line">    return portString;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据网络协议头、BASE_PATH和端口号，获取路径：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+ (NSString *)hostPathURLWithNetworkProtocol:(CHNetworkProtocolType)protocolType baseHost:(NSString *)baseHost portType:(CHServerPortType)portType</span><br><span class="line">&#123;</span><br><span class="line">    NSString *URLString = [CHHTTPHelper networkProtocol:protocolType]; </span><br><span class="line"></span><br><span class="line">    URLString = [URLString stringByAppendingString:baseHost]; </span><br><span class="line"></span><br><span class="line">    return [URLString stringByAppendingString:[CHHTTPHelper port:portType]];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取HOST：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+ (NSString *)host</span><br><span class="line">&#123;</span><br><span class="line">    static NSString *host = nil;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        host = [CHHTTPHelper hostPathURLWithNetworkProtocol:CHNetworkProtocolTypeHTTP baseHost:[CHHTTPHelper baseHost] portType:CHServerPortTypeNone];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return host;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取HOST_PATH：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">+ (NSString *)hostPath</span><br><span class="line">&#123;</span><br><span class="line">    static NSString *hostPath = nil;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">    if ([[CHHTTPHelper baseHost] isEqualToString:BASE_HOST_DEVELOPER]) </span><br><span class="line">    &#123;</span><br><span class="line">        hostPath = [CHHTTPHelper hostPathURLWithNetworkProtocol:CHNetworkProtocolTypeHTTP baseHost:[CHHTTPHelper baseHost] portType:CHServerPortType1020];</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    hostPath = [CHHTTPHelper hostPathURLWithNetworkProtocol:CHNetworkProtocolTypeHTTP baseHost:[CHHTTPHelper baseHost] portType:CHServerPortType2030]; </span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return hostPath;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><p>HOST路径配置完成后，则可根据后台具体模块和API接口，设置完整请求路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static NSString * const MODULE_USER = @&quot;user&quot;;</span><br><span class="line">static NSString * const API_REGISTER_PATH = @&quot;registered&quot;;</span><br><span class="line"></span><br><span class="line">+ (NSString *)URLWithModule:(NSString *)module APIPath:(NSString *)APIPath</span><br><span class="line">&#123;</span><br><span class="line">    return [[[CHHTTPHelper hostPath] stringByAppendingPathComponent:module] stringByAppendingPathComponent:APIPath];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[CHHTTPHelper URLWithModule:MODULE_USER APIPath:API_REGISTER_PATH];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>之后则是处理请求结果。AFNetworking的请求回调内包含了成功回调和失败回调，但是，这里的成功和失败是根据网络连接失败或数据解析失败等硬请求失败来区分的。有些时候，项目本身业务要求，根据后台返回的一些错误字段提示，将请求结果归为失败请求，也应当进入失败回调处理。同时，有时候业务需求，我们可能也希望提供一个无论成功或失败回调后，都会进入的缓冲回调(所有完成回调)内。基于以上的业务考虑，我们应当对AFNetworking的请求回调再进行一层抽象处理：<br>假定后台返回如下字段要求区分请求失败或成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">请求成功：</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;result&quot;:1,</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">请求失败：</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;result&quot;:0,</span><br><span class="line">        &quot;exCode&quot;:&quot;100&quot;,</span><br><span class="line">        &quot;exMsg&quot;:&quot;失败&quot;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>设置请求回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">typedef void(^CHHTTPRequestSuccess)(NSURLSessionDataTask *task, id responseObject);</span><br><span class="line">typedef void(^CHHTTPRequestFailure)(NSURLSessionDataTask *task, NSError *error, NSString *exCode, NSString *exMsg);</span><br><span class="line">typedef void(^CHHTTPRequestAllCompletion)();</span><br></pre></td></tr></table></figure></p>
+<p>请求失败回调处理：<br>默认请求失败提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">static NSString * const DEFAULT_EX_CODE = @&quot;请求失败&quot;;</span><br><span class="line">static NSString * const DEFAULT_EX_MSG = @&quot;加载失败&quot;;</span><br></pre></td></tr></table></figure></p>
+<p>配置请求失败回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (void)configureRequestFailure:(CHHTTPRequestFailure)failure withTask:(NSURLSessionDataTask *)task error:(NSError *)error exCode:(NSString *)exCode exMsg:(NSString *)exMsg</span><br><span class="line">&#123;</span><br><span class="line">    !failure?:failure(task, error, exCode, exMsg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据返回数据, 配置请求失败回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">+ (void)configureRequestFailure:(CHHTTPRequestFailure)failure withTask:(NSURLSessionDataTask *)task error:(NSError *)error responseObject:(id)responseObject</span><br><span class="line">&#123;</span><br><span class="line">    if (!responseObject)</span><br><span class="line">    &#123;</span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error exCode:DEFAULT_EX_CODE exMsg:DEFAULT_EX_MSG];</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    NSString *exCode = !responseObject[@&quot;exCode&quot;]?DEFAULT_EX_CODE:responseObject[@&quot;exCode&quot;];</span><br><span class="line">    NSString *exMsg = !responseObject[@&quot;exMsg&quot;]?DEFAULT_EX_MSG:responseObject[@&quot;exMsg&quot;];</span><br><span class="line"></span><br><span class="line">    [CHHTTPHelper configureRequestFailure:failure withTask:task error:error exCode:exCode exMsg:exMsg];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)configureRequestFailure:(CHHTTPRequestFailure)failure withTask:(NSURLSessionDataTask *)task responseObject:(id)responseObject</span><br><span class="line">&#123;</span><br><span class="line">    [CHHTTPHelper configureRequestFailure:failure withTask:task error:nil responseObject:responseObject];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置请求失败(硬请求失败)回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (void)configureRequestFailure:(CHHTTPRequestFailure)failure withTask:(NSURLSessionDataTask *)task error:(NSError *)error</span><br><span class="line">&#123;</span><br><span class="line">    [CHHTTPHelper configureRequestFailure:failure withTask:task error:error responseObject:nil];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>请求成功回调处理：<br>配置请求成功回调：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (void)configureRequestSuccess:(CHHTTPRequestSuccess)success withTask:(NSURLSessionDataTask *)task responseObject:(id)responseObject</span><br><span class="line">&#123;</span><br><span class="line">    !success?:success(task, responseObject);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置请求成功回调(处理result为0情况)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">+ (void)configureRequestSuccess:(CHHTTPRequestSuccess)success requestFailure:(CHHTTPRequestFailure)failure withTask:(NSURLSessionDataTask *)task responseObject:(id)responseObject</span><br><span class="line">&#123;</span><br><span class="line">    if ([responseObject isKindOfClass:[NSDictionary class]]) </span><br><span class="line">    &#123;</span><br><span class="line">        if ([responseObject[@&quot;result&quot;] intValue] == 1) </span><br><span class="line">        &#123;</span><br><span class="line">            [CHHTTPHelper configureRequestSuccess:success withTask:task responseObject:responseObject];</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task responseObject:responseObject];</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所有完成回调(缓冲回调)处理：<br>配置所有完成回调(缓冲回调)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (void)configureRequestAllCompletion:(CHHTTPRequestAllCompletion)completion</span><br><span class="line">&#123;</span><br><span class="line">    !completion?:completion();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>基于以上的回调处理，对GET/HEAD/POST/PUT/PATCH/DELETE等请求方法进行封装处理即可：<br>GET请求：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (NSURLSessionDataTask *)GET:(NSString *)URLString parameters:(NSDictionary *)parameters success:(CHHTTPRequestSuccess)success failure:(CHHTTPRequestFailure)failure allCompletion:(CHHTTPRequestAllCompletion)allCompletion</span><br><span class="line">&#123;</span><br><span class="line">    return [self.manager GET:URLString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) &#123;</span><br><span class="line"></span><br><span class="line">    &#125; success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestSuccess:success requestFailure:failure withTask:task responseObject:responseObject];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line"></span><br><span class="line">    &#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>HEAD请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (NSURLSessionDataTask *)HEAD:(NSString *)URLString parameters:(NSDictionary *)parameters success:(CHHTTPRequestSuccess)success failure:(CHHTTPRequestFailure)failure allCompletion:(CHHTTPRequestAllCompletion)allCompletion</span><br><span class="line">&#123;</span><br><span class="line">    return [self.manager HEAD:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestSuccess:success requestFailure:failure withTask:task responseObject:nil];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line"></span><br><span class="line">    &#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>POST请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (NSURLSessionDataTask *)POST:(NSString *)URLString parameters:(NSDictionary *)parameters success:(CHHTTPRequestSuccess)success failure:(CHHTTPRequestFailure)failure allCompletion:(CHHTTPRequestAllCompletion)allCompletion</span><br><span class="line">&#123;</span><br><span class="line">    return [self.manager POST:URLString parameters:parameters constructingBodyWithBlock:^(id&lt;AFMultipartFormData&gt;  _Nonnull formData) &#123;</span><br><span class="line"></span><br><span class="line">    &#125; progress:^(NSProgress * _Nonnull uploadProgress) &#123;</span><br><span class="line"></span><br><span class="line">    &#125; success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestSuccess:success requestFailure:failure withTask:task responseObject:responseObject];</span><br><span class="line"></span><br><span class="line">     [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line"></span><br><span class="line">    &#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PUT请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (NSURLSessionDataTask *)PUT:(NSString *)URLString parameters:(NSDictionary *)parameters success:(CHHTTPRequestSuccess)success failure:(CHHTTPRequestFailure)failure allCompletion:(CHHTTPRequestAllCompletion)allCompletion</span><br><span class="line">&#123;</span><br><span class="line">    return [self.manager PUT:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestSuccess:success requestFailure:failure withTask:task responseObject:responseObject];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line"></span><br><span class="line">    &#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PATCH请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (NSURLSessionDataTask *)PATCH:(NSString *)URLString parameters:(NSDictionary *)parameters success:(CHHTTPRequestSuccess)success failure:(CHHTTPRequestFailure)failure allCompletion:(CHHTTPRequestAllCompletion)allCompletion</span><br><span class="line">&#123;</span><br><span class="line">    return [self.manager PATCH:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestSuccess:success requestFailure:failure withTask:task responseObject:responseObject];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line"></span><br><span class="line">    &#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>DELETE请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (NSURLSessionDataTask *)DELETE:(NSString *)URLString parameters:(NSDictionary *)parameters success:(CHHTTPRequestSuccess)success failure:(CHHTTPRequestFailure)failure allCompletion:(CHHTTPRequestAllCompletion)allCompletion</span><br><span class="line">&#123;</span><br><span class="line">    return [self.manager DELETE:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestSuccess:success requestFailure:failure withTask:task responseObject:responseObject];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line"></span><br><span class="line">    &#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestFailure:failure withTask:task error:error];</span><br><span class="line"></span><br><span class="line">        [CHHTTPHelper configureRequestAllCompletion:allCompletion];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>至此，网络请求工具类基本部分完成，至于一些工具方法(检测网络连接状态等)，可随需求添加。我们在需要请求的位置调用即可：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">NSString *URLString = [CHHTTPHelper URLWithModule:MODULE_USER APIPath:API_REGISTER_PATH];</span><br><span class="line"></span><br><span class="line">NSDictionary *parameters = @&#123;...&#125;;</span><br><span class="line"></span><br><span class="line">[[YQHTTPHelper defaultHTTPHelper] GET:URLString parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) &#123;</span><br><span class="line">    </span><br><span class="line">    // do someting.</span><br><span class="line"></span><br><span class="line">&#125; failure:^(NSURLSessionDataTask *task, NSError *error, NSString *exCode, NSString *exMsg) &#123;</span><br><span class="line"></span><br><span class="line">    // do someting.</span><br><span class="line"></span><br><span class="line">&#125; allCompletion:^&#123;</span><br><span class="line"></span><br><span class="line">    // do someting.</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在实际开发里，我们通常还会在网络层上再抽象一层业务层，将具体的请求实现、数据转换及一些业务逻辑进行整合，方便外部调度以及后续维护。当然，这是另一个话题了。</p>
+<p>附，示例代码：<a href="https://github.com/ColinHwang/CHHTTPHelper" target="_blank" rel="external">https://github.com/ColinHwang/CHHTTPHelper</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/AFNetworking/" rel="tag">#AFNetworking</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/23/text-masked/" rel="next" title="NSAttributedString 实现文字遮盖效果">
+                <i class="fa fa-chevron-left"></i> NSAttributedString 实现文字遮盖效果
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Colin Hwang" />
+          <p class="site-author-name" itemprop="name">Colin Hwang</p>
+          <p class="site-description motion-element" itemprop="description">Developer</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Colin Hwang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'colinhwangcom';
+      var disqus_identifier = '2016/07/04/afnetworking-wrapped/';
+      var disqus_title = "AFNetworking 网络请求工具类的简单封装";
+      var disqus_url = 'http://yoursite.com/2016/07/04/afnetworking-wrapped/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
