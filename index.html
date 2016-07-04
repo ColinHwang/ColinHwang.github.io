@@ -272,7 +272,7 @@
             
               
                 
-                <a class="post-title-link" href="/2016/06/23/NSAttributeString-text-marked/" itemprop="url">
+                <a class="post-title-link" href="/2016/06/23/text-masked/" itemprop="url">
                   NSAttributedString 实现文字遮盖效果
                 </a>
               
@@ -297,8 +297,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/06/23/NSAttributeString-text-marked/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/23/NSAttributeString-text-marked/" itemprop="commentsCount"></span>
+                <a href="/2016/06/23/text-masked/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/23/text-masked/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -326,7 +326,7 @@
 <p>最简单的实现是让UI把文字做成图片直接使用。第二种则是文本内加空格：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[NSString stringWithFormat:@&quot;爱  好：&quot;];</span><br></pre></td></tr></table></figure></p>
 <p>但是这种方法的问题在于由于文字font的存在，有时候，添加空格后文本的长度无法与三个文字的文本长度一致。这时候我们还可以选择第三种方案，保持文字长度一致，再遮盖部分文字，保留显示文字：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">居住地：____     职一业：____</span><br><span class="line">爱一好：____     电一话：____</span><br><span class="line"></span><br><span class="line">职一业： -&gt;  职  业：</span><br><span class="line">爱一好： -&gt;  爱  好：</span><br><span class="line">电一话： -&gt;  电  话：</span><br></pre></td></tr></table></figure></p>
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/06/23/NSAttributeString-text-marked/#more" rel="contents">
+            <a class="btn" href="/2016/06/23/text-masked/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
