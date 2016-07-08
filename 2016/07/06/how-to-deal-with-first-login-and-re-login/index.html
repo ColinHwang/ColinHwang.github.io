@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -84,15 +84,18 @@
 
 
 
-<meta name="description" content="Developer">
-<meta property="og:type" content="website">
-<meta property="og:title" content="CHwang">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="很多应用都会有这样一种登录设置：初次登录显示初次登录界面，若用户不登录可选择游客身份进入应用，当点击应用显示界面的某部分时，则弹出再次登录页面提示用户登录，此时用户登录则以用户身份进入应用。具体实现如下：程序初次进入时，首先验证账号是否存在或合法，根据判断结果进行分支处理。为方便账号判断我们，可以先创建一个账号管理工具类统一处理账号问题：123456789101112131415161718192">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 处理首次登录和再次登录(游客登录)">
+<meta property="og:url" content="http://yoursite.com/2016/07/06/how-to-deal-with-first-login-and-re-login/index.html">
 <meta property="og:site_name" content="CHwang">
-<meta property="og:description" content="Developer">
+<meta property="og:description" content="很多应用都会有这样一种登录设置：初次登录显示初次登录界面，若用户不登录可选择游客身份进入应用，当点击应用显示界面的某部分时，则弹出再次登录页面提示用户登录，此时用户登录则以用户身份进入应用。具体实现如下：程序初次进入时，首先验证账号是否存在或合法，根据判断结果进行分支处理。为方便账号判断我们，可以先创建一个账号管理工具类统一处理账号问题：123456789101112131415161718192">
+<meta property="og:image" content="http://yoursite.com/images/postImages/how-to-deal-with-first-login-and-re-login/how-to-deal-with-first-login-and-re-login-1.png">
+<meta property="og:updated_time" content="2016-07-08T12:04:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CHwang">
-<meta name="twitter:description" content="Developer">
+<meta name="twitter:title" content="iOS 处理首次登录和再次登录(游客登录)">
+<meta name="twitter:description" content="很多应用都会有这样一种登录设置：初次登录显示初次登录界面，若用户不登录可选择游客身份进入应用，当点击应用显示界面的某部分时，则弹出再次登录页面提示用户登录，此时用户登录则以用户身份进入应用。具体实现如下：程序初次进入时，首先验证账号是否存在或合法，根据判断结果进行分支处理。为方便账号判断我们，可以先创建一个账号管理工具类统一处理账号问题：123456789101112131415161718192">
+<meta name="twitter:image" content="http://yoursite.com/images/postImages/how-to-deal-with-first-login-and-re-login/how-to-deal-with-first-login-and-re-login-1.png">
 
 
 
@@ -110,7 +113,7 @@
   };
 </script>
 
-  <title> CHwang </title>
+  <title> iOS 处理首次登录和再次登录(游客登录) | CHwang </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -140,9 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -249,9 +250,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -271,10 +272,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/07/06/how-to-deal-with-first-login-and-re-login/" itemprop="url">
-                  iOS 处理首次登录和再次登录(游客登录)
-                </a>
+                iOS 处理首次登录和再次登录(游客登录)
               
             
           </h1>
@@ -321,9 +319,7 @@
       
 
       
-        
-          
-            <p>很多应用都会有这样一种登录设置：初次登录显示初次登录界面，若用户不登录可选择游客身份进入应用，当点击应用显示界面的某部分时，则弹出再次登录页面提示用户登录，此时用户登录则以用户身份进入应用。具体实现如下：<br>程序初次进入时，首先验证账号是否存在或合法，根据判断结果进行分支处理。为方便账号判断我们，可以先创建一个账号管理工具类统一处理账号问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">@implementation CHAccountHelper</span><br><span class="line"></span><br><span class="line">// 读取账号</span><br><span class="line">+ (NSString *)account</span><br><span class="line">&#123;</span><br><span class="line">    return [CHUserDefaultsHelper account];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 存储账号</span><br><span class="line">+ (void)saveAccount:(NSString *)account</span><br><span class="line">&#123;</span><br><span class="line">    // Check Account</span><br><span class="line"></span><br><span class="line">    // Save Account</span><br><span class="line">    [CHUserDefaultsHelper saveAccount:account];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 移除账号</span><br><span class="line">+ (void)removeAccount</span><br><span class="line">&#123;</span><br><span class="line">    [CHUserDefaultsHelper removeAccount];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 判断账号是否存在</span><br><span class="line">+ (BOOL)isAccountExist</span><br><span class="line">&#123;</span><br><span class="line">    NSString *account = [CHAccountHelper account];</span><br><span class="line">    if (account &amp;&amp; account.length &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+        <p>很多应用都会有这样一种登录设置：初次登录显示初次登录界面，若用户不登录可选择游客身份进入应用，当点击应用显示界面的某部分时，则弹出再次登录页面提示用户登录，此时用户登录则以用户身份进入应用。具体实现如下：<br>程序初次进入时，首先验证账号是否存在或合法，根据判断结果进行分支处理。为方便账号判断我们，可以先创建一个账号管理工具类统一处理账号问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">@implementation CHAccountHelper</span><br><span class="line"></span><br><span class="line">// 读取账号</span><br><span class="line">+ (NSString *)account</span><br><span class="line">&#123;</span><br><span class="line">    return [CHUserDefaultsHelper account];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 存储账号</span><br><span class="line">+ (void)saveAccount:(NSString *)account</span><br><span class="line">&#123;</span><br><span class="line">    // Check Account</span><br><span class="line"></span><br><span class="line">    // Save Account</span><br><span class="line">    [CHUserDefaultsHelper saveAccount:account];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 移除账号</span><br><span class="line">+ (void)removeAccount</span><br><span class="line">&#123;</span><br><span class="line">    [CHUserDefaultsHelper removeAccount];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 判断账号是否存在</span><br><span class="line">+ (BOOL)isAccountExist</span><br><span class="line">&#123;</span><br><span class="line">    NSString *account = [CHAccountHelper account];</span><br><span class="line">    if (account &amp;&amp; account.length &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 <p>这里，通过NSUserDefaults来模拟账号存取。同时，为方便管理及后续维护，我们通常不通过账号管理工具类来直接进行账号数据的操作，而是根据存储方式，创建与之对应的数据存储工具类管理数据层。这样做的目的在于减低耦合性，将上层业务与底层数据进行一定的隔离，当数据层变动时(如存储方式从NSUserDefaults替换为NSKeyedArchiver)，只需更改数据层，业务方并不会有太大改动，便于后续维护。再而，为方便数据层的管理，我们通常还会以分类方法的形式为数据存储工具类进行业务扩展：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">static NSString * const ACCOUNT_KEY = @&quot;account&quot;;</span><br><span class="line"></span><br><span class="line">@implementation CHUserDefaultsHelper (configureAccount)</span><br><span class="line"></span><br><span class="line">+ (void)saveAccount:(NSString *)account</span><br><span class="line">&#123;</span><br><span class="line">    [CHUserDefaultsHelper saveString:account withKey:ACCOUNT_KEY];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (NSString *)account</span><br><span class="line">&#123;</span><br><span class="line">    return [CHUserDefaultsHelper stringWithKey:ACCOUNT_KEY];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)removeAccount</span><br><span class="line">&#123;</span><br><span class="line">    [CHUserDefaultsHelper removeObjectForKey:ACCOUNT_KEY];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 <p>账号管理工具类设计完成后，便可根据业务需求进行业务设计，可以先通过逻辑图理顺业务：<br><img src="/images/postImages/how-to-deal-with-first-login-and-re-login/how-to-deal-with-first-login-and-re-login-1.png" style="width: 300px;"><br>由上图可知，先在程序入口处理判断分支，若本地存在账号则以会员进入首页：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[UIApplication sharedApplication].keyWindow setRootViewController:[CHTabBarController new]];</span><br></pre></td></tr></table></figure></p>
 <p>否则，进入登录界面(首次)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CHNavigationController *navigationController = [[CHNavigationController alloc] initWithRootViewController:[CHLoginViewController new]];</span><br><span class="line"></span><br><span class="line">[[UIApplication sharedApplication].keyWindow setRootViewController:navigationController];</span><br></pre></td></tr></table></figure></p>
@@ -335,554 +331,81 @@
 <p>最后，我们在需要的位置调用即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void)loginView:(CHLoginView *)loginView didClickLoginButton:(UIButton *)button</span><br><span class="line">&#123;</span><br><span class="line">    [CHService handleLoginWithParameters:@&quot;account&quot; successHandle:^&#123;</span><br><span class="line"></span><br><span class="line">    &#125; failureHandle:^&#123;</span><br><span class="line"></span><br><span class="line">    &#125; allCompletionHandle:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)loginView:(CHLoginView *)loginView didClickLookArroundButton:(UIButton *)button</span><br><span class="line">&#123;</span><br><span class="line">    [CHService handleSkipToHomeViewControllerBeforeLoginCompletion:nil];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>以上例子除了提供处理首次登录和再次登录的一种方案外，也提供了一种实现业务的执行思路：分析业务，理顺逻辑，组织代码，实现需求和分离优化。于我而言，或许后者比前者更为重要。</p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/04/afnetworking-wrapped/" itemprop="url">
-                  AFNetworking3.0 网络请求工具类的简单封装
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-04T15:47:41+08:00" content="2016-07-04">
-              2016-07-04
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/04/afnetworking-wrapped/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/04/afnetworking-wrapped/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>开发中，通常需要对网络请求进行一些封装处理以方便开发人员调用。当前，大多数iOS项目都采用Mattt Thompson主导的AFNetworking开源库处理网络请求。有些项目里直接使用AFNetworking的相关请求方法，把请求的实现直接暴露在外部。从程序设计的角度看，这是不合适的。请求实现分散在项目的各个角落，当需要同时修改请求的某个配置时，注定是场灾难。因而，我们一般会在AFNetworking等网络库的基础上，进行一层抽象，通过网络请求工具类包装接口，统一调度，并依据项目自身接口环境配置请求参数。以下模拟接口环境，对AFNetworking 3.0网络请求库进行一些简单的封装：<br>首先，创建网络请求工具类，并进行一些统一配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, strong) AFHTTPSessionManager *manager;</span><br><span class="line"></span><br><span class="line">+ (CHHTTPHelper *)defaultHTTPHelper</span><br><span class="line">&#123;</span><br><span class="line">    static CHHTTPHelper *instance = nil;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        instance = [[self alloc] init];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/04/afnetworking-wrapped/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/04/afnetworking-wrapped/" rel="next" title="AFNetworking3.0 网络请求工具类的简单封装">
+                <i class="fa fa-chevron-left"></i> AFNetworking3.0 网络请求工具类的简单封装
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/23/text-masked/" itemprop="url">
-                  NSAttributedString 实现文字遮盖效果
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-23T15:08:55+08:00" content="2016-06-23">
-              2016-06-23
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/06/23/text-masked/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/23/text-masked/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>最近接到一个需求，文本长度为2-3个文字，两个文字长度的文本要求中间存在空距，左右顶边，且整体文本长度与三个文字的文本长度保持一致。效果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">居住地：____     职  业：____</span><br><span class="line">爱  好：____     电  话：____</span><br></pre></td></tr></table></figure></p>
-<p>最简单的实现是让UI把文字做成图片直接使用。第二种则是文本内加空格：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[NSString stringWithFormat:@&quot;爱  好：&quot;];</span><br></pre></td></tr></table></figure></p>
-<p>但是这种方法的问题在于由于文字font的存在，有时候，添加空格后文本的长度无法与三个文字的文本长度一致。这时候我们还可以选择第三种方案，保持文字长度一致，再遮盖部分文字，保留显示文字：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">居住地：____     职一业：____</span><br><span class="line">爱一好：____     电一话：____</span><br><span class="line"></span><br><span class="line">职一业： -&gt;  职  业：</span><br><span class="line">爱一好： -&gt;  爱  好：</span><br><span class="line">电一话： -&gt;  电  话：</span><br></pre></td></tr></table></figure></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/06/23/text-masked/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
           </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/22/round-number/" itemprop="url">
-                  NSDecimalNumber 四舍五入到指定位数
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-22T13:37:56+08:00" content="2016-06-22">
-              2016-06-22
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/06/22/round-number/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/22/round-number/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>项目里经常有这么一种需求，把小数四舍五入到指定位数，查阅文档，我们发现系统提供了NSDecimalNumber类方便我们实现需求。<br>NSDecimalNumber是系统提供的一个专门处理十进位制数的类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDecimalNumber, an immutable subclass of NSNumber, provides an object-oriented wrapper for doing base-10 arithmetic. An instance can represent any number that can be expressed as mantissa x 10^exponent where mantissa is a decimal integer up to 38 digits long, and exponent is an integer from –128 through 127.</span><br></pre></td></tr></table></figure></p>
-<p>NSDecimalNumber提供了处理舍入问题的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Rounds the receiver off in the way specified by behavior and returns the result, a newly createdNSDecimalNumber object.</span><br><span class="line"></span><br><span class="line">- (NSDecimalNumber *)decimalNumberByRoundingAccordingToBehavior:(nullable id &lt;NSDecimalNumberBehaviors&gt;)behavior;</span><br></pre></td></tr></table></figure></p>
-<p>该方法需要调用者提供一个遵循NSDecimalNumerBehaviors协议的执行者来处理舍入问题。这里我们无需自定义一个类，只需使用系统提供的NSDecimalNumberHandler类来处理。该类已遵循NSDecimalNumerBehaviors协议，且提供了一些方法方便我们实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDecimalNumberHandler is a class that adopts the NSDecimalNumberBehaviors protocol. This class allows you to set the way an NSDecimalNumber object rounds off and handles errors, without having to create a custom class.</span><br></pre></td></tr></table></figure></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/06/22/round-number/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
+
+    <div class="post-spread">
       
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/30/crop-image/" itemprop="url">
-                  UIImage 裁切图片
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-30T23:31:01+08:00" content="2016-05-30">
-              2016-05-30
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/30/crop-image/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/30/crop-image/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>项目里通常会有这样一种需求，将图片按指定尺寸裁切(一般为矩形图片裁切，保留中间部分为正方形，多用于上传缩略图)。查阅文档，我们发现系统提供了以下两个API方便我们实现：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Creates a bitmap image using the data contained within a subregion of an existing bitmap image.</span><br><span class="line"></span><br><span class="line">CGImageCreateWithImageInRect(CGImageRef image, CGRect rect);</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Creates and returns an image object with the specified scale and orientation factors:</span><br><span class="line"></span><br><span class="line">+ (UIImage *)imageWithCGImage:(CGImageRef)cgImage scale:(CGFloat)scale orientation:(UIImageOrientation)orientation;</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/05/30/crop-image/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/28/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-28T17:42:36+08:00" content="2016-05-28">
-              2016-05-28
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/28/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/28/hello-world/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>希望是个好的开始。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
@@ -890,6 +413,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -909,8 +443,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -953,6 +496,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -1056,6 +610,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
@@ -1072,9 +630,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'colinhwangcom';
-      var disqus_identifier = 'index.html';
-      var disqus_title = "";
-      var disqus_url = '';
+      var disqus_identifier = '2016/07/06/how-to-deal-with-first-login-and-re-login/';
+      var disqus_title = "iOS 处理首次登录和再次登录(游客登录)";
+      var disqus_url = 'http://yoursite.com/2016/07/06/how-to-deal-with-first-login-and-re-login/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
@@ -1085,6 +643,8 @@
       }
 
       run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
       
     </script>
   
