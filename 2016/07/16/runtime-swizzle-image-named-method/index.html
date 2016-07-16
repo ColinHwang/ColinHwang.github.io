@@ -1,0 +1,788 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,UIKit," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="iOS开发中，图片长期占用内存空间往往会导致应用内存空间过大，进而引发系统看门狗杀死应用。因而，如何有效地管理应用图片占用内存空间，并在适当的时候将其释放，对于提升程序的稳定性有重要意义。而一个显而易见的做法是，对于一些空间较大或不常显示的图片，使用imageWithContentsOfFile:方法替代imageNamed:方法进行创建。通常我们创建图片会选择使用imageNamed:方法：12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIImage 运行时替换imageNamed:方法">
+<meta property="og:url" content="http://yoursite.com/2016/07/16/runtime-swizzle-image-named-method/index.html">
+<meta property="og:site_name" content="CHwang">
+<meta property="og:description" content="iOS开发中，图片长期占用内存空间往往会导致应用内存空间过大，进而引发系统看门狗杀死应用。因而，如何有效地管理应用图片占用内存空间，并在适当的时候将其释放，对于提升程序的稳定性有重要意义。而一个显而易见的做法是，对于一些空间较大或不常显示的图片，使用imageWithContentsOfFile:方法替代imageNamed:方法进行创建。通常我们创建图片会选择使用imageNamed:方法：12">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-7.jpg">
+<meta property="og:updated_time" content="2016-07-16T16:56:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIImage 运行时替换imageNamed:方法">
+<meta name="twitter:description" content="iOS开发中，图片长期占用内存空间往往会导致应用内存空间过大，进而引发系统看门狗杀死应用。因而，如何有效地管理应用图片占用内存空间，并在适当的时候将其释放，对于提升程序的稳定性有重要意义。而一个显而易见的做法是，对于一些空间较大或不常显示的图片，使用imageWithContentsOfFile:方法替代imageNamed:方法进行创建。通常我们创建图片会选择使用imageNamed:方法：12">
+<meta name="twitter:image" content="http://yoursite.com/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> UIImage 运行时替换imageNamed:方法 | CHwang </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-78463688-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CHwang</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">物我一心</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'HuBPCAs2dbWdeBkzdRM-','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                UIImage 运行时替换imageNamed:方法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-16T23:36:00+08:00" content="2016-07-16">
+              2016-07-16
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/16/runtime-swizzle-image-named-method/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/16/runtime-swizzle-image-named-method/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/16/runtime-swizzle-image-named-method/" class="leancloud_visitors" data-flag-title="UIImage 运行时替换imageNamed:方法">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>iOS开发中，图片长期占用内存空间往往会导致应用内存空间过大，进而引发系统看门狗杀死应用。因而，如何有效地管理应用图片占用内存空间，并在适当的时候将其释放，对于提升程序的稳定性有重要意义。而一个显而易见的做法是，对于一些空间较大或不常显示的图片，使用<code>imageWithContentsOfFile:</code>方法替代<code>imageNamed:</code>方法进行创建。<br>通常我们创建图片会选择使用<code>imageNamed:</code>方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">This method looks in the system caches for an image object with the specified name and returns the variant of that image that is best suited for the main screen. If a matching image object is not already in the cache, this method locates and loads the image data from disk or from an available asset catalog, and then returns the resulting object.</span><br><span class="line"></span><br><span class="line">+ (UIImage *)imageNamed:(NSString *)name;</span><br><span class="line"></span><br><span class="line">[UIImage imageNamed:@&quot;test.jpg&quot;];</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>从官方文档对该方法描述，我们可以知道，通过该方法创建的图片，系统会将其缓存于系统缓存内，当我们下次创建时，直接从系统缓存中获取图片。这是种典型的以空间换时间的优化策略，对于一些需频繁使用的小图片，使用该方法进行创建是合适。但是，对于一些比较大的或不常使用的图片，优化本身反而造成了性能上的影响，图片缓存无法及时释放，导致应用占用内存过大。原因主要在于该方法创建的图片所在的缓存区域为系统缓存，而苹果对此是有所保留的。虽然文档内有补充：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The system may purge cached image data at any time to free up memory. Purging occurs only for images that are in the cache but are not currently being used.</span><br></pre></td></tr></table></figure></p>
+<p>但是，与此同时，苹果并未提供/开放清除图片缓存的方法，而是将其交于系统进行处理。这样极大限制了方法的灵活性，开发者无法根据自身的需求，对图片缓存进行操作。而苹果或许也意识到了这个问题，在文档内也同样建议：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">If you have an image file that will only be displayed once and wish to ensure that it does not get added to the system’s cache, you should instead create your image using imageWithContentsOfFile:. This will keep your single-use image out of the system image cache, potentially improving the memory use characteristics of your app.</span><br></pre></td></tr></table></figure></p>
+<p>通过<code>imageWithContentsOfFile:</code>方法创建的图片不会缓存于系统缓存内，开发者可在适当的时机对图片进行处理。因而，对于一些比较大的或不常使用的图片，我们应当使用<code>imageWithContentsOfFile:</code>进行创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Creates and returns an image object by loading the image data from the file at the specified path. This method does not cache the image object.</span><br><span class="line"></span><br><span class="line">+ (UIImage *)imageWithContentsOfFile:(NSString *)path;</span><br><span class="line"></span><br><span class="line">[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;test.jpg&quot; ofType:nil]];</span><br></pre></td></tr></table></figure></p>
+<p>当然，为了方便图片的管理及优化接口的调用，我们可以将图片放置于一个文件夹内并通过<code>groups</code>的方式添加到项目的main Bundle内。此时，我们应当能通过以下方法获取图片的完整路径：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[NSBundle mainBundle] pathForResource:@&quot;test.jpg&quot; ofType:nil];</span><br></pre></td></tr></table></figure></p>
+<p>保证图片文件根路径一致后，我们便可通过<code>UIImage</code>分类方法的形式，根据图片的文件名(带扩展名)创建图片(无系统缓存)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (UIImage *)imageWithContentName:(NSString *)name</span><br><span class="line">&#123;</span><br><span class="line">    return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:nil]];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此，我们似乎只需要在创建图片的位置调用即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[UIImage imageWithContentName:@&quot;test.jpg&quot;];</span><br></pre></td></tr></table></figure></p>
+<p>但是，实际开发中，我们需考虑的情况更多。首先是引入时机的问题。若项目开发已久，代码中多处调用<code>imageNamed:</code>方法创建图片，如需直接改动为<code>imageWithContentName:</code>，替换成本是比较大的；若项目处于初始阶段，我们可以指定比较大的或不常使用的图片使用<code>imageWithContentName:</code>方法创建，一些频繁使用的小图片使用<code>imageNamed:</code>方法创建。但是，在多人开发下，这可能会面临第二个问题，协作开发的不一致。我们无法保证每个开发者都对合适的图片使用合适的创建方法。综合考虑下，我们可能需要牺牲一些性能上的优化以确保开发上的一致，即所有图片实际都是使用<code>imageWithContentName:</code>方法创建的。相对于小图片的频繁创建导致的额外性能开销，因错用方法导致的应用内存占用过大或许更为严重。方向确定后，则是具体操作上的问题。新项目上，我们或许可以强制规定所有图片都使用<code>imageWithContentName:</code>方法创建。但在一些旧有项目中，若替换成本过大，我们可以选择用种更优雅的方式切入，通过<code>SwizzleMethod</code>，在运行时(Runtime)交换<code>imageNamed:</code>和<code>imageWithContentName:</code>方法的实现。这样，在外部代码变动不大的情况下，便可实现需求，具体实现如下：<br>首先，针对<code>imageNamed:</code>对PNG图片的额外支持(在mian bundle下，无需添加扩展名，直接使用图片文件名便可获取)，对<code>imageWithContentName:</code>方法进行一些改造以额外支持PNG图片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    if (!name || name.length &lt;= 0) return nil;</span><br><span class="line"></span><br><span class="line">    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];</span><br><span class="line"></span><br><span class="line">    if (!path)</span><br><span class="line">    &#123;</span><br><span class="line">        path = [[NSBundle mainBundle] pathForResource:name ofType:@&quot;.png&quot;];</span><br><span class="line"></span><br><span class="line">        if (!path)</span><br><span class="line">        &#123;</span><br><span class="line">            path = [[NSBundle mainBundle] pathForResource:name ofType:@&quot;.PNG&quot;];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return [UIImage imageWithContentsOfFile:path];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如此，确保mian bundle下，PNG图片都能通过如下方式获取：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[UIImage imageNamed:@&quot;test_1&quot;];</span><br><span class="line">[UIImage imageWithContentName:@&quot;test_1&quot;];</span><br></pre></td></tr></table></figure></p>
+<p>之后，则是实现方法交换。为了方便管理，我们应当针对<code>SwizzleMethod</code>情况，为<code>UIImage</code>添加一个新的分类，在此分类内进行方法替换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line"></span><br><span class="line">@implementation UIImage (Swizzle)</span><br><span class="line"></span><br><span class="line">+ (void)load</span><br><span class="line">&#123;</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(self, @selector(imageNamed:));</span><br><span class="line">    Method newMethod = class_getInstanceMethod(self, @selector(imageWithContentName:));</span><br><span class="line"></span><br><span class="line">    if (!originalMethod || !newMethod) return;</span><br><span class="line"></span><br><span class="line">    method_exchangeImplementations(originalMethod, newMethod);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>这里，由于需求是替代编辑而非增量编辑，我们可以选择直接进行方法替换。同时，我们也可以将类方法/静态方法的替换实现抽象为<code>NSObject</code>的分类方法以方便调用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line"></span><br><span class="line">@implementation NSObject (SwizzleMethod)</span><br><span class="line"></span><br><span class="line">+ (BOOL)swizzleClassMethod:(SEL)originalSel withNewMethod:(SEL)newSel</span><br><span class="line">&#123;</span><br><span class="line">    Class class = object_getClass(self);</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(class, originalSel);</span><br><span class="line">    Method newMethod = class_getInstanceMethod(class, newSel);</span><br><span class="line"></span><br><span class="line">    if (!originalMethod || !newMethod) return NO;</span><br><span class="line"></span><br><span class="line">    method_exchangeImplementations(originalMethod, newMethod);</span><br><span class="line"></span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>如此，<code>UIImage (Swizzle)</code>分类则可简化为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@implementation UIImage (Swizzle)</span><br><span class="line"></span><br><span class="line">+ (void)load</span><br><span class="line">&#123;    </span><br><span class="line">    [self swizzleClassMethod:@selector(imageNamed:) withNewMethod:@selector(imageWithContentName:)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>这样，在外部代码基本不变的情况下，便可实现需求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[self.topImageView setImage:[UIImage imageNamed:@&quot;test_1&quot;]];</span><br><span class="line">[self.bottomImageView setImage:[UIImage imageNamed:@&quot;test_2.jpg&quot;]];</span><br></pre></td></tr></table></figure></p>
+<p>最后，我们可以通过示例来检测分别通过<code>imageNamed:</code>或<code>imageWithContentName:</code>方法创建图片，对应用内存的影响：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-1.jpg" style="width: 500px;"><br>示例中的图片分别为2.7MB和1.8MB左右。这里，我们通过<code>Instruments</code>的<code>Allocations</code>工具来查看真机环境(iPhone 6)下，应用内存的变化。同时，统一通过Modal方式呈现图片显示界面，并在界面销毁时做如下操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[_topImageView setImage:nil];</span><br><span class="line">[_bottomImageView setImage:nil];</span><br><span class="line">_topImageView = nil;</span><br><span class="line">_bottomImageView = nil;</span><br></pre></td></tr></table></figure></p>
+<p>首先为通过<code>imageNamed:</code>创建图片的内存变化情况：<br>图片界面呈现前：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-2.jpg" style="width: 500px;"><br>图片界面呈现后：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-3.jpg" style="width: 500px;"><br>图片界面销毁后：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-4.jpg" style="width: 500px;"><br>通过<code>imageWithContentName:</code>创建图片的内存变化情况：<br>图片界面呈现前：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-5.jpg" style="width: 500px;"><br>图片界面呈现后：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-6.jpg" style="width: 500px;"><br>图片界面销毁后：<br><img src="/images/postImages/runtime-swizzle-image-named-method/runtime-swizzle-image-named-method-7.jpg" style="width: 500px;"><br>我们可以发现，图片过大时应用所占内存空间是比较大的，而<code>imageNamed:</code>方法创建图片后，系统并不会及时得从系统缓存清除图片。因而，通过<code>imageWithContentName:</code>创建图片，开发者自行管理图片的释放时机，对于优化应用占用内存来说，还是相当必要的。</p>
+<p>附，示例代码：<a href="https://github.com/ColinHwang/Demo-of-Tutorial-in-Blog/tree/master/Runtime-SwizzleImageNameMethod" target="_blank" rel="external">https://github.com/ColinHwang/Demo-of-Tutorial-in-Blog/tree/master/Runtime-SwizzleImageNameMethod</a></p>
+<p>参考资料：</p>
+<p>[1]Apple Inc.UIImage Reference Class[EB/OL].<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImage_Class/index.html" target="_blank" rel="external">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImage_Class/index.html</a> ,2016-7-16.<br>[2]南峰子.Objective-C Runtime 运行时之四：Method Swizzling[EB/OL].<a href="http://southpeak.github.io/blog/2014/11/06/objective-c-runtime-yun-xing-shi-zhi-si-:method-swizzling" target="_blank" rel="external">http://southpeak.github.io/blog/2014/11/06/objective-c-runtime-yun-xing-shi-zhi-si-:method-swizzling</a> ,2014-11-6.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/UIKit/" rel="tag">#UIKit</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/06/how-to-deal-with-first-login-and-re-login/" rel="next" title="iOS 处理首次登录和再次登录(游客登录)">
+                <i class="fa fa-chevron-left"></i> iOS 处理首次登录和再次登录(游客登录)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Colin Hwang" />
+          <p class="site-author-name" itemprop="name">Colin Hwang</p>
+          <p class="site-description motion-element" itemprop="description">Developer</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Colin Hwang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'colinhwangcom';
+      var disqus_identifier = '2016/07/16/runtime-swizzle-image-named-method/';
+      var disqus_title = "UIImage 运行时替换imageNamed:方法";
+      var disqus_url = 'http://yoursite.com/2016/07/16/runtime-swizzle-image-named-method/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("qdWiKCNpWIaM14f8wceRCsDR-gzGzoHsz", "jBgvX6q7iLf9uYaB1dkcynRq");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
