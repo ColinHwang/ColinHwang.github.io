@@ -1,0 +1,794 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,UIKit," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="开发中，通常需要对图片进行压缩处理(多用于图片压缩上传)，一般，我们可能会直接使用系统提供的API将图片对象转为Data对象以实现需求：12345Returns the data for the specified image in PNG format.UIKIT_EXTERN  NSData * UIImagePNGRepresentation(UIImage *image); Returns">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIImage 压缩图片">
+<meta property="og:url" content="http://yoursite.com/2016/07/30/compress-image/index.html">
+<meta property="og:site_name" content="CHwang">
+<meta property="og:description" content="开发中，通常需要对图片进行压缩处理(多用于图片压缩上传)，一般，我们可能会直接使用系统提供的API将图片对象转为Data对象以实现需求：12345Returns the data for the specified image in PNG format.UIKIT_EXTERN  NSData * UIImagePNGRepresentation(UIImage *image); Returns">
+<meta property="og:image" content="http://yoursite.com/images/postImages/compress-image/compress-image-1.png">
+<meta property="og:updated_time" content="2016-08-01T15:41:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIImage 压缩图片">
+<meta name="twitter:description" content="开发中，通常需要对图片进行压缩处理(多用于图片压缩上传)，一般，我们可能会直接使用系统提供的API将图片对象转为Data对象以实现需求：12345Returns the data for the specified image in PNG format.UIKIT_EXTERN  NSData * UIImagePNGRepresentation(UIImage *image); Returns">
+<meta name="twitter:image" content="http://yoursite.com/images/postImages/compress-image/compress-image-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> UIImage 压缩图片 | CHwang </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-78463688-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CHwang</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">物我一心</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'HuBPCAs2dbWdeBkzdRM-','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                UIImage 压缩图片
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-30T12:12:52+08:00" content="2016-07-30">
+              2016-07-30
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/30/compress-image/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/30/compress-image/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/30/compress-image/" class="leancloud_visitors" data-flag-title="UIImage 压缩图片">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发中，通常需要对图片进行压缩处理(多用于图片压缩上传)，一般，我们可能会直接使用系统提供的API将图片对象转为Data对象以实现需求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Returns the data for the specified image in PNG format.</span><br><span class="line">UIKIT_EXTERN  NSData * UIImagePNGRepresentation(UIImage *image); </span><br><span class="line"></span><br><span class="line">Returns the data for the specified image in JPEG format.</span><br><span class="line">UIKIT_EXTERN  NSData * UIImageJPEGRepresentation(UIImage *image, CGFloat compressionQuality);</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>由于<code>UIImagePNGRepresentation()</code>方法无法调整压缩质量，通常我们会使用<code>UIImageJPEGRepresentation()</code>方法。但是，若图片本身尺寸较大，而压缩质量较低，这样实现会出现图片点位像素不足，图片模糊不清。因而，我们通常会在图片压缩之前先调整图片的尺寸。同时，为方便代码管理，我们通过<code>UIImage</code>分类方法的形式实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 根据指定尺寸，调整图片尺寸(图片可能会被拉伸)</span><br><span class="line">- (UIImage *)imageByResizeToSize:(CGSize)size</span><br><span class="line">&#123;</span><br><span class="line">    return [self imageByResizeToSize:size sclae:YES];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 根据指定尺寸及是否按屏幕分辨比放大，调整图片尺寸(图片可能会被拉伸)</span><br><span class="line">- (UIImage *)imageByResizeToSize:(CGSize)size sclae:(BOOL)scale</span><br><span class="line">&#123;</span><br><span class="line">    if (size.width &lt;= 0 || size.height &lt;= 0) return nil;</span><br><span class="line">    CGFloat scaleFactor = scale ? self.scale : 1.0;</span><br><span class="line">    UIGraphicsBeginImageContextWithOptions(size, NO, scaleFactor);</span><br><span class="line">    [self drawInRect:CGRectMake(0, 0, size.width, size.height)];</span><br><span class="line">    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    return image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样调整后的图片尺寸，若缩放比例不一致，会出现图片拉伸变形。如需等比缩放，我们可对方法再做一步处理，指定图片形变宽度，比例缩放图片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 根据指定宽度，等比例调整图片尺寸(图片可能会被拉伸)</span><br><span class="line">- (UIImage *)imageByResizeToWidth:(CGFloat)width</span><br><span class="line">&#123;</span><br><span class="line">    return [self imageByResizeToWidth:width sclae:YES];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 根据指定宽度及是否按屏幕分辨比放大，等比例调整图片尺寸(图片可能会被拉伸)</span><br><span class="line">- (UIImage *)imageByResizeToWidth:(CGFloat)width sclae:(BOOL)scale</span><br><span class="line">&#123;</span><br><span class="line">    if (self.size.width &lt;= 0 || self.size.height &lt;= 0) return nil;</span><br><span class="line">    CGFloat height = width * self.size.height / self.size.width;</span><br><span class="line">    return [self imageByResizeToSize:CGSizeMake(width, height) sclae:scale];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>之后，则是进行图片大小压缩处理。由于<code>UIImageJPEGRepresentation()</code>方法中的<code>compressionQuality</code>参数是0到1区间的浮动数值，若通过设定统一数值(如0.5)进行压缩，无法应对指定压缩大小的情况，因而我们一般会选用迭代逼近的的办法，不断调整压缩质量，获取满足图片大小的图片数据。具体思路为，先判断压缩质量1.0的图片数据大小是否满足要求，否则根据递减系数循环压缩，满足条件或压缩至最低压缩质量则结束循环。具体实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">- (NSData *)compressToJPEGFormatDataWithFactor:(CGFloat)factor maxFileSize:(u_int64_t)fileSize</span><br><span class="line">&#123;</span><br><span class="line">    if (!self) return nil;</span><br><span class="line"></span><br><span class="line">    NSData *tempImageData = UIImageJPEGRepresentation(self, 1.0);</span><br><span class="line">    if ([tempImageData length] &lt;= fileSize) return tempImageData;</span><br><span class="line"></span><br><span class="line">    CGFloat compression = 1.0f;</span><br><span class="line">    CGFloat minCompression = 0.1f;</span><br><span class="line">    CGFloat compressionFactor = factor; // 0.1 0.01</span><br><span class="line"></span><br><span class="line">    while (compression &gt; minCompression)</span><br><span class="line">    &#123;</span><br><span class="line">        @autoreleasepool</span><br><span class="line">        &#123;</span><br><span class="line">            compression -= compressionFactor;</span><br><span class="line">            tempImageData = UIImageJPEGRepresentation(self, compression);</span><br><span class="line"></span><br><span class="line">            if ([tempImageData length] &lt;= fileSize) return tempImageData;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上迭代逼近取值，采用的是普通的迭代循环的办法。这里存在两个问题，首先是顺序循环下，查找效率较低。再而，需手动设置递减系数。同时，由于递减系数决定查找次数(0.1 -&gt; 10, 0.01 -&gt; 100)，进而决定结果精度，高精度必然导致低效率。若要保持一定的结果精度同时提高查找效率，我们可以选择使用二分查找的办法，调整查找区间，减低查找次数，逼近最优结果。查找过程从<code>compressionQuality</code>的中间值(0.5)开始，如果中间值满足要求，结束查找；如果结果对应的<code>compressionQuality</code>值大于或者小于中间值，则在大于或小于中间值的新区间中查找，并且和开始一样从中间值开始比较。若某一步骤满足要求或者区间下界大于或等于上界，结束查找。如下图所示：<br><img src="/images/postImages/compress-image/compress-image-1.png" style="width: 500px;"><br>具体实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">// 限定压缩精度系数</span><br><span class="line">NS_INLINE CGFloat clampCompressionFactor(CGFloat factor)</span><br><span class="line">&#123;</span><br><span class="line">    return factor &lt;= 1e-10 ? 1e-10 : factor &gt; 0.1 ? 0.1 : factor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 根据压缩精度系数([1e-10, 0.1])及文件大小，获取压缩后的JPEG格式的图片数据</span><br><span class="line">- (NSData *)compressToJPEGFormatDataWithFactor:(CGFloat)factor maxFileSize:(u_int64_t)fileSize</span><br><span class="line">&#123;</span><br><span class="line">    if (!self) return nil;</span><br><span class="line"></span><br><span class="line">    NSData *tempImageData = UIImageJPEGRepresentation(self, 1.0);</span><br><span class="line">    if ([tempImageData length] &lt;= fileSize) return tempImageData;</span><br><span class="line"></span><br><span class="line">    NSData *targetImageData = nil;</span><br><span class="line">    CGFloat compressionFactor = clampCompressionFactor(factor);</span><br><span class="line">    CGFloat minFactor = 0;</span><br><span class="line">    CGFloat maxFactor = 1.0;</span><br><span class="line">    CGFloat midFactor = 0;</span><br><span class="line"></span><br><span class="line">    while (fabs(maxFactor-minFactor) &gt; compressionFactor)</span><br><span class="line">    &#123;</span><br><span class="line">        @autoreleasepool</span><br><span class="line">        &#123;</span><br><span class="line">            midFactor = minFactor + (maxFactor - minFactor)/2;</span><br><span class="line">            tempImageData = UIImageJPEGRepresentation(self, midFactor);</span><br><span class="line"></span><br><span class="line">            if ([tempImageData length] &gt; fileSize)</span><br><span class="line">            &#123;</span><br><span class="line">                maxFactor = midFactor;</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                minFactor = midFactor;</span><br><span class="line">                targetImageData = tempImageData;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return targetImageData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里，由于<code>compressionQuality</code>为浮点值，设置查找出口时，若简单判断查找区间下界和上界差值(maxFactor-minFactor &gt; 0)，下界恒小于上界，将陷入死循环。因而，我们可以选择设定查找区间下界和上界的差值精度(maxFactor-minFactor &gt; 0.01)以避免这种情况。同时，通过内联函数<code>clampCompressionFactor()</code>限定精度范围([1e-10, 0.1])。之后，则是对方法接口进一步处理，方便外部调用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// 指定图片宽度及图片文件大小，压缩图片。图片将等比例缩放。</span><br><span class="line">- (NSData *)resetImageDataWithImageWidth:(CGFloat)width maxFileSize:(uint64_t)maxFileSize</span><br><span class="line">&#123;</span><br><span class="line">    // Image Size</span><br><span class="line">    UIImage *newImage = [self imageByResizeToWidth:width];</span><br><span class="line"></span><br><span class="line">    // File Size</span><br><span class="line">    return [newImage compressToJPGFormatDataWithFactor:1e-10 maxFileSize:maxFileSize];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 指定图片尺寸及图片文件大小，压缩图片。</span><br><span class="line">- (NSData *)resetImageDataWithImageSize:(CGSize)newSize maxFileSize:(uint64_t)maxFileSize</span><br><span class="line">&#123;</span><br><span class="line">    // Image Size</span><br><span class="line">    UIImage *newImage = [self imageByResizeToSize:newSize];</span><br><span class="line"></span><br><span class="line">    // File Size</span><br><span class="line">    return [newImage compressToJPGFormatDataWithFactor:1e-10 maxFileSize:maxFileSize];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上方法中，我们设置图片压缩精度系数为1e-10，若对查找结果要求不高，可按实际需求进行调整。最后，在需要的地方调用即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">UIImage *image = [UIImage imageNamed:@&quot;test_1.jpg&quot;];</span><br><span class="line"></span><br><span class="line">NSData *data = [image resetImageDataWithImageWidth:640 maxFileSize:100000];</span><br></pre></td></tr></table></figure></p>
+<p>示例代码：<a href="https://github.com/ColinHwang/Demo-of-Tutorial-in-Blog/tree/master/iOS-CompressImage" target="_blank" rel="external">https://github.com/ColinHwang/Demo-of-Tutorial-in-Blog/tree/master/iOS-CompressImage</a></p>
+<p>参考资料：</p>
+<p>[1]SuperDanny.iOS图片压缩上传[EB/OL].<a href="http://superdanny.link/2016/01/28/iOS-Upload-Image" target="_blank" rel="external">http://superdanny.link/2016/01/28/iOS-Upload-Image</a> ,2016-1-28.<br>[2]GeekDmm.（3）iOS程序猿算法学习——二分查找「Binary Search」[EB/OL].<a href="http://www.jianshu.com/p/30906f7014ec" target="_blank" rel="external">http://www.jianshu.com/p/30906f7014ec</a> ,2016-2-27.<br>[3]JasonDing.【leetcode边做边学】二分查找应用[EB/OL].<a href="http://www.jianshu.com/p/ff2c4ab66f98" target="_blank" rel="external">http://www.jianshu.com/p/ff2c4ab66f98</a> ,2014-9-18.<br>[4]Apple Inc.UIImage Reference Class[EB/OL].<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImage_Class/index.html" target="_blank" rel="external">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImage_Class/index.html</a> ,2016-7-30.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/UIKit/" rel="tag">#UIKit</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/27/enumate-collections-and-remove-objects/" rel="next" title="iOS 遍历可变集合并移除集合内指定类别元素">
+                <i class="fa fa-chevron-left"></i> iOS 遍历可变集合并移除集合内指定类别元素
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Colin Hwang" />
+          <p class="site-author-name" itemprop="name">Colin Hwang</p>
+          <p class="site-description motion-element" itemprop="description">Developer</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ColinHwang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/chwang7158" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Colin Hwang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'colinhwangcom';
+      var disqus_identifier = '2016/07/30/compress-image/';
+      var disqus_title = "UIImage 压缩图片";
+      var disqus_url = 'http://yoursite.com/2016/07/30/compress-image/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("qdWiKCNpWIaM14f8wceRCsDR-gzGzoHsz", "jBgvX6q7iLf9uYaB1dkcynRq");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
