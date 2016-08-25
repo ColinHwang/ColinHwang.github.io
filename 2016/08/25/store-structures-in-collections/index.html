@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/08/25/store-structures-in-collections/index.html">
 <meta property="og:site_name" content="CHwang">
 <meta property="og:description" content="最近开发中遇到一个需求，需将结构体变量存入一个集合中，并从集合中取出。实现思路上，由于结构体是C类型的数据结构，我们应当先通过NSValue对结构体变量进行装箱操作，之后将装箱后的NSValue对象存入集合，最后再从集合内获取NSValue对象并将其拆箱为结构体变量。以存取CGColorRef变量为例，具体实现如下：首先，对结构体变量进行装箱及拆箱的处理。查看系统UIGeometry.h文件，我们">
-<meta property="og:updated_time" content="2016-08-25T11:19:54.000Z">
+<meta property="og:updated_time" content="2016-08-25T11:45:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 集合存取结构体变量">
 <meta name="twitter:description" content="最近开发中遇到一个需求，需将结构体变量存入一个集合中，并从集合中取出。实现思路上，由于结构体是C类型的数据结构，我们应当先通过NSValue对结构体变量进行装箱操作，之后将装箱后的NSValue对象存入集合，最后再从集合内获取NSValue对象并将其拆箱为结构体变量。以存取CGColorRef变量为例，具体实现如下：首先，对结构体变量进行装箱及拆箱的处理。查看系统UIGeometry.h文件，我们">
@@ -294,7 +294,7 @@
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
                 <a href="/2016/08/25/store-structures-in-collections/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/25/store-structures-in-collections/" itemprop="commentsCount"></span>
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/25/store-structures-in-collections/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -328,7 +328,7 @@
       
         <p>最近开发中遇到一个需求，需将结构体变量存入一个集合中，并从集合中取出。实现思路上，由于结构体是C类型的数据结构，我们应当先通过<code>NSValue</code>对结构体变量进行装箱操作，之后将装箱后的<code>NSValue</code>对象存入集合，最后再从集合内获取<code>NSValue</code>对象并将其拆箱为结构体变量。以存取<code>CGColorRef</code>变量为例，具体实现如下：<br>首先，对结构体变量进行装箱及拆箱的处理。查看系统<code>UIGeometry.h</code>文件，我们可以发现对于一些结构体，系统已进行了装箱及拆箱的处理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@interface NSValue (NSValueUIGeometryExtensions)</span><br><span class="line"></span><br><span class="line">+ (NSValue *)valueWithCGPoint:(CGPoint)point;</span><br><span class="line">+ (NSValue *)valueWithCGVector:(CGVector)vector;</span><br><span class="line">+ (NSValue *)valueWithCGSize:(CGSize)size;</span><br><span class="line">+ (NSValue *)valueWithCGRect:(CGRect)rect;</span><br><span class="line">+ (NSValue *)valueWithCGAffineTransform:(CGAffineTransform)transform;</span><br><span class="line">+ (NSValue *)valueWithUIEdgeInsets:(UIEdgeInsets)insets;</span><br><span class="line">+ (NSValue *)valueWithUIOffset:(UIOffset)insets NS_AVAILABLE_IOS(5_0);</span><br><span class="line"></span><br><span class="line">- (CGPoint)CGPointValue;</span><br><span class="line">- (CGVector)CGVectorValue;</span><br><span class="line">- (CGSize)CGSizeValue;</span><br><span class="line">- (CGRect)CGRectValue;</span><br><span class="line">- (CGAffineTransform)CGAffineTransformValue;</span><br><span class="line">- (UIEdgeInsets)UIEdgeInsetsValue;</span><br><span class="line">- (UIOffset)UIOffsetValue NS_AVAILABLE_IOS(5_0);</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<p>因而，我们可以参照系统实现，对所需结构体变量进行处理。查阅文档，我们发现<code>NSValue</code>提供了两个API：<code>valueWithBytes:objCType:</code>和<code>getValue:</code>方便我们实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Creates a value object containing the specified value, interpreted with the specified Objective-C type.</span><br><span class="line">+ (NSValue *)valueWithBytes:(const void *)value objCType:(const char *)type;</span><br><span class="line"></span><br><span class="line">Copies the value into the specified buffer.</span><br><span class="line">- (void)getValue:(void *)buffer;</span><br></pre></td></tr></table></figure></p>
+<p>因而，我们可以参照系统实现，对所需结构体变量进行处理。查阅文档，我们发现<code>NSValue</code>提供了两个API，<code>valueWithBytes:objCType:</code>和<code>getValue:</code>方便我们实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Creates a value object containing the specified value, interpreted with the specified Objective-C type.</span><br><span class="line">+ (NSValue *)valueWithBytes:(const void *)value objCType:(const char *)type;</span><br><span class="line"></span><br><span class="line">Copies the value into the specified buffer.</span><br><span class="line">- (void)getValue:(void *)buffer;</span><br></pre></td></tr></table></figure></p>
 <p><code>CGColorRef</code>变量装箱及拆箱实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@implementation NSValue (Boxing)</span><br><span class="line"></span><br><span class="line">+ (NSValue *)valueWithCGColor:(CGColorRef)color</span><br><span class="line">&#123;</span><br><span class="line">    return [NSValue valueWithBytes:&amp;color objCType:@encode(CGColorRef)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGColorRef)CGColorValue</span><br><span class="line">&#123;</span><br><span class="line">    CGColorRef color;</span><br><span class="line">    [self getValue:&amp;color];</span><br><span class="line">    return color;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 <p>这里，我们通过<code>NSValue</code>的分类方法形式实现。需要注意的是，编译器指令<code>@encode()</code>表示返回一种类型的C字符串，类似于C的<code>typeof</code>操作。装箱及拆箱实现后，我们可以根据常用集合类型对结构体变量进行存取操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">NSValue *testColorValue = [NSValue valueWithCGColor:[UIColor cyanColor].CGColor];</span><br><span class="line"></span><br><span class="line">// Dictionary</span><br><span class="line">NSMutableDictionary *testDictionary = [NSMutableDictionary dictionary];</span><br><span class="line"></span><br><span class="line">[testDictionary setValue:testColorValue forKey:@&quot;testColorValue&quot;];</span><br><span class="line">[[testDictionary valueForKey:@&quot;testColorValue&quot;] CGColorValue];</span><br><span class="line"></span><br><span class="line">// Array</span><br><span class="line">NSMutableArray *testArray = [NSMutableArray array];</span><br><span class="line"></span><br><span class="line">[testArray addObject:testColorValue];</span><br><span class="line">[[testArray objectAtIndex:0] CGColorValue];</span><br><span class="line"></span><br><span class="line">// Set</span><br><span class="line">NSMutableSet *testSet = [NSMutableSet set];</span><br><span class="line"></span><br><span class="line">[testSet addObject:testColorValue];</span><br><span class="line">[[testSet anyObject] CGColorValue];</span><br></pre></td></tr></table></figure></p>
 <p>以上实现主要在外部进行结构体变量装箱及拆箱操作，为方便代码管理，我们可以在此基础上进一步优化，为特定类型结构体的存取进行接口设计，将装箱及拆箱操作置于实现内部，外部只需传入结构体变量便能完成存取操作。以存取<code>CGColorRef</code>变量为例：<br>字典存取<code>CGColorRef</code>变量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">@implementation NSDictionary (Store)</span><br><span class="line"></span><br><span class="line">// 根据Key值，获取CGColorRef变量，若为空返回NULL</span><br><span class="line">- (CGColorRef)CGColorForKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    return [self CGColorForKey:key default:NULL];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 根据Key值，获取CGColorRef变量，若为空返回默认值</span><br><span class="line">- (CGColorRef)CGColorForKey:(NSString *)key default:(CGColorRef)defaultValue</span><br><span class="line">&#123;</span><br><span class="line">    if (!key) return defaultValue;</span><br><span class="line">    id value = self[key];</span><br><span class="line">    if (value &amp;&amp; [value isKindOfClass:[NSValue class]]) return [value CGColorValue];</span><br><span class="line"></span><br><span class="line">    return defaultValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation NSMutableDictionary (Store)</span><br><span class="line"></span><br><span class="line">// 添加CGColorRef变量</span><br><span class="line">- (void)setCGColor:(CGColorRef)color forKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    [self setValue:[NSValue valueWithCGColor:color] forKey:key];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
@@ -426,11 +426,8 @@
           
   <div class="comments" id="comments">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
+      <div class="ds-thread" data-thread-key="2016/08/25/store-structures-in-collections/"
+           data-title="iOS 集合存取结构体变量" data-url="http://yoursite.com/2016/08/25/store-structures-in-collections/">
       </div>
     
   </div>
@@ -655,30 +652,28 @@
 
   
 
-
-
+  
+    
   
 
-    <script type="text/javascript">
-      var disqus_shortname = 'colinhwangcom';
-      var disqus_identifier = '2016/08/25/store-structures-in-collections/';
-      var disqus_title = "iOS 集合存取结构体变量";
-      var disqus_url = 'http://yoursite.com/2016/08/25/store-structures-in-collections/';
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"colinhwangcom"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
 
-      function run_disqus_script(disqus_script){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-      
-        run_disqus_script('embed.js');
-      
-    </script>
   
+    
+  
+
+
 
 
 
