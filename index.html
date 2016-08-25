@@ -272,6 +272,118 @@
             
               
                 
+                <a class="post-title-link" href="/2016/08/25/store-structures-in-collections/" itemprop="url">
+                  iOS 集合存取结构体变量
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-25T14:49:52+08:00" content="2016-08-25">
+              2016-08-25
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/25/store-structures-in-collections/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/25/store-structures-in-collections/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/08/25/store-structures-in-collections/" class="leancloud_visitors" data-flag-title="iOS 集合存取结构体变量">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>最近开发中遇到一个需求，需将结构体变量存入一个集合中，并从集合中取出。实现思路上，由于结构体是C类型的数据结构，我们应当先通过<code>NSValue</code>对结构体变量进行装箱操作，之后将装箱后的<code>NSValue</code>对象存入集合，最后再从集合内获取<code>NSValue</code>对象并将其拆箱为结构体变量。以存取<code>CGColorRef</code>变量为例，具体实现如下：<br>首先，对结构体变量进行装箱及拆箱的处理。查看系统<code>UIGeometry.h</code>文件，我们可以发现对于一些结构体，系统已进行了装箱及拆箱的处理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@interface NSValue (NSValueUIGeometryExtensions)</span><br><span class="line"></span><br><span class="line">+ (NSValue *)valueWithCGPoint:(CGPoint)point;</span><br><span class="line">+ (NSValue *)valueWithCGVector:(CGVector)vector;</span><br><span class="line">+ (NSValue *)valueWithCGSize:(CGSize)size;</span><br><span class="line">+ (NSValue *)valueWithCGRect:(CGRect)rect;</span><br><span class="line">+ (NSValue *)valueWithCGAffineTransform:(CGAffineTransform)transform;</span><br><span class="line">+ (NSValue *)valueWithUIEdgeInsets:(UIEdgeInsets)insets;</span><br><span class="line">+ (NSValue *)valueWithUIOffset:(UIOffset)insets NS_AVAILABLE_IOS(5_0);</span><br><span class="line"></span><br><span class="line">- (CGPoint)CGPointValue;</span><br><span class="line">- (CGVector)CGVectorValue;</span><br><span class="line">- (CGSize)CGSizeValue;</span><br><span class="line">- (CGRect)CGRectValue;</span><br><span class="line">- (CGAffineTransform)CGAffineTransformValue;</span><br><span class="line">- (UIEdgeInsets)UIEdgeInsetsValue;</span><br><span class="line">- (UIOffset)UIOffsetValue NS_AVAILABLE_IOS(5_0);</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/08/25/store-structures-in-collections/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/30/compress-image/" itemprop="url">
                   UIImage 二分压缩图片
                 </a>
@@ -1301,7 +1413,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
