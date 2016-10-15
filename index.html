@@ -331,7 +331,7 @@
 
       
         
-          <p>最近遇到个需求，将日期转换为与之对应的占星星座（ Astrological Zodiac Sign）<br>及生肖（Chinese Zodiac Sign）。在讨论具体实现前，我们可以先对时间处理从概念到实现上进行一些了解和回顾。<br>首先，从概念上，我们知道时间是独立存在的，日期是时间在特定历法中的表现。当然，在实际生活中，日期还受地理时区等因素影响。从概念出发，我们可以理解，平时讨论的日期更多地是指特定历法和时区下的某个时间。比如北京时间9点，公历2016年9月1日，农历八月十五等。<br>而在<code>Cocoa</code>框架中，苹果对时间和日期的处理方式是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time -&gt; NSTimeInterva -&gt; NSDate -&gt; NSCalendar/NSTimeZone/NSDateComponents/NSDateComponentFormatter/NSDateFormatter -&gt; date</span><br></pre></td></tr></table></figure></p>
+          <p>最近遇到个需求，需将日期转换为与之对应的占星星座（ Astrological Zodiac Sign）<br>及生肖（Chinese Zodiac Sign）。在讨论具体实现前，我们可以先对时间处理从概念到实现上进行一些了解和回顾。<br>首先，从概念上，我们知道时间是独立存在的，日期是时间在特定历法中的表现。当然，在实际生活中，日期还受地理时区等因素影响。从概念出发，我们可以理解，平时讨论的日期更多地是指特定历法和时区下的某个时间。比如北京时间9点，公历2016年9月1日，农历八月十五等。<br>而在<code>Cocoa</code>框架中，苹果对时间和日期的处理方式是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time -&gt; NSTimeInterva -&gt; NSDate -&gt; NSCalendar/NSTimeZone/NSDateComponents/NSDateComponentFormatter/NSDateFormatter -&gt; date</span><br></pre></td></tr></table></figure></p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/09/21/convert-date-to-astrology-sign/#more" rel="contents">
               阅读全文 &raquo;
